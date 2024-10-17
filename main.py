@@ -1,7 +1,9 @@
 #import subprocess
 # Executa o script name.py
 #subprocess.run(["python3", "name.py"])
+import time
 from selenium import webdriver
+
 
 def get_driver():
 
@@ -17,9 +19,31 @@ def get_driver():
   driver.get("http://automated.pythonanywhere.com")
   return driver
 
-def main():
-  driver = get_driver()
-  element = driver.find_element(by="xpath", value="/html/body/div[1]/div/h1[1]")
-  return element.text
+def clean_text(text):
+  """Extract only the temperature from text"""
+  output = float(text.split(": ")[1])
+  return output
 
-print(main())
+def main():
+  i = 1
+  ok = True
+  driver = get_driver()  # Movido para fora do loop para não reiniciar o driver a cada iteração
+  while ok:
+    time.sleep(2)
+    element = driver.find_element(by="xpath", value="/html/body/div[1]/div/h1[2]")
+    return_value = clean_text(element.text)
+    print(return_value)
+    if return_value == 20:
+      ok = False
+    i += 1
+  driver.quit()  # Certifique-se de fechar o driver ao final
+
+main()  # Sem print
+
+
+  #driver = get_driver()
+  #time.sleep(2)
+  #element = driver.find_element(by="xpath", value="/html/body/div[1]/div/h1[2]")
+  #return clean_text(element.text)
+
+#print(main())
